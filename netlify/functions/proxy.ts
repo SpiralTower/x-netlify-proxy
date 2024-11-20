@@ -28,34 +28,7 @@ export default async (request: Request, context: Context) => {
   }
 
   const { pathname, searchParams } = new URL(request.url);
-  if(pathname === "/") {
-    let blank_html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>xAI API proxy on Netlify Edge</title>
-</head>
-<body>
-  <h1 id="x-api-proxy-on-netlify-edge">xAI API proxy on Netlify Edge</h1>
-  <p>This project is forked from <a href="https://github.com/antergone/palm-netlify-proxy" target="_blank">palm-netlify-proxy</a></p>
-  <p>Tips: This project uses a reverse proxy to solve problems such as location restrictions in xAI APIs. </p>
-  <p>If you have any of the following requirements, you may need the support of this project.</p>
-  <ol>
-  <li>When you see the error message &quot;This service is not available in your region.&quot; when calling the xAI API</li>
-  <li>You want to customize the xAI API</li>
-  </ol>
-  <p>For technical discussions, please visit <a href="https://simonmy.com/posts/使用netlify反向代理google-palm-api.html">https://simonmy.com/posts/使用netlify反向代理google-palm-api.html</a></p>
-</body>
-</html>
-    `
-    return new Response(blank_html, {
-      headers: {
-        ...CORS_HEADERS,
-        "content-type": "text/html"
-      },
-    });
-  }
+
 
   const url = new URL(pathname, "https://api.x.ai");
   searchParams.delete("_path");
@@ -64,7 +37,7 @@ export default async (request: Request, context: Context) => {
     url.searchParams.append(key, value);
   });
 
-  const headers = pickHeaders(request.headers, ["content-type", "Authorization", "accept-encoding"]);
+  const headers = pickHeaders(request.headers, ["content-type", "authorization", "accept-encoding"]);
 
   const response = await fetch(url, {
     body: request.body,
